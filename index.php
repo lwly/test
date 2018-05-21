@@ -1,4 +1,4 @@
 <?php 
 	phpinfo();
-	echo 12121;
+	print_r('1212121');
 ?>
