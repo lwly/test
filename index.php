@@ -1,4 +1,5 @@
 <?php 
 	phpinfo();
-	print_r('1212121');
+	echo '1212sdasd1';
+	echo 'sdahsdui';
 ?>
