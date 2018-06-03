@@ -66,7 +66,7 @@ https://open.weixin.qq.com/connect/qrconnect?appid=APPID&redirect_uri=REDIRECT_U
 
 https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&secret=SECRET&code=CODE&grant_type=authorization_code
 
-第三步：通过access_token调用接口
+第三步：通过access_token调用接口，获取用户基本数据资源或帮助用户实现基本操作。
 
 获取access_token后，进行接口调用，有以下前提：
 
