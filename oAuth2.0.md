@@ -1,5 +1,5 @@
 
-理解oauth2.0
+<h1>理解oAuth2.0</h1>
  1. 需求
  假设： 有一个"云冲印"的网站，可以将用户储存在Google的照片，冲印出来。用户为了使用该服务，必须让"云冲印"读取自己储存在Google上的照片。
  问题是只有得到用户的授权，Google才会同意"云冲印"读取这些照片。那么，"云冲印"怎样获得用户的授权呢？
@@ -15,6 +15,8 @@
 （4）用户只有修改密码，才能收回赋予"云冲印"的权力。但是这样做，会使得其他所有获得用户授权的第三方应用程序全部失效。
 
 （5）只要有一个第三方应用程序被破解，就会导致用户密码泄漏，以及所有被密码保护的数据泄漏。
+
+OAuth（开放授权）是一个开放标准，允许用户让第三方应用访问该用户在某一网站上存储的私密的资源（如照片，视频，联系人列表），而无需将用户名和密码提供给第三方应用。
 
  2. 专有名词
 
@@ -45,4 +47,30 @@
 （F）资源服务器确认令牌无误，同意向客户端开放资源。
 
 3.以微信为例
-	
+
+
+<img src="https://res.wx.qq.com/op_res/D0wkkHSbtC6VUSHX4WsjP5ssg5mdnEmXO8NGVGF34dxS9N1WCcq6wvquR4K_Hcut">
+
+步骤：
+ 第一步：请求CODE
+
+第三方使用网站应用授权登录前请注意已获取相应网页授权作用域（scope=snsapi_login），则可以通过在PC端打开以下链接：
+https://open.weixin.qq.com/connect/qrconnect?appid=APPID&redirect_uri=REDIRECT_URI&response_type=code&scope=SCOPE&state=STATE#wechat_redirect
+若提示“该链接无法访问”，请检查参数是否填写错误，如redirect_uri的域名与审核时填写的授权域名不一致或scope不为snsapi_login。
+
+第二步：通过code获取access_token
+
+通过code获取access_token
+
+https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&secret=SECRET&code=CODE&grant_type=authorization_code
+
+第三步：通过access_token调用接口
+
+获取access_token后，进行接口调用，有以下前提：
+
+1. access_token有效且未超时；
+2. 微信用户已授权给第三方应用帐号相应接口作用域（scope）
+
+
+
+
