@@ -74,5 +74,90 @@ https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&secret=SECRET&code
 2. 微信用户已授权给第三方应用帐号相应接口作用域（scope）
 
 
+return array(
 
+	//'配置项'=>'配置值'
+	'APPID'=>'xxxxxxx',
+	'SECRET'=>'xxxxx',
+	'REDIRECT_URI'=>'http://www.xxxx.cn/index.php/Home/Login/auth',
+ 
+);
+
+
+//获取code跳转
+
+function get_code($state)
+{
+
+    $param['appid'] = C('APPID'); //AppID
+    $param ['redirect_uri'] = C('REDIRECT_URI'); //获取code后的跳转地址
+    $param ['response_type'] = 'code'; //不用修改
+    $param ['scope'] =  'snsapi_userinfo';//'snsapi_userinfo';//'snsapi_base'; //不用修改
+    $param ['state'] = $state; //可在行定义该参数
+    
+    $url = 'https://open.weixin.qq.com/connect/oauth2/authorize?' . http_build_query($param) . '#wechat_redirect';
+    
+    //redirect ( $url );
+    header('Location: '.$url);
+}
+
+//获取网页授权access_token，此access_token非普通的access_token，
+//详情请看微信公众号开发者文档
+
+
+function get_access_token(){
+
+    $param ['appid'] = C('APPID'); //AppID
+    $param ['secret'] = C('SECRET'); //AppSecret
+    $param ['code'] = $_GET['code'];
+    $param ['grant_type'] = 'authorization_code';
+    	
+    $url = 'https://api.weixin.qq.com/sns/oauth2/access_token?'.http_build_query($param);
+   
+    $content = file_get_contents($url);
+    $content = json_decode ( $content, true );
+	//var_dump($content);
+	//exit;
+    if (! empty ( $content ['errmsg'] )) {
+       return false;
+    }
+    
+    return $content;
+}
+
+//通过授权获取用户信息, $content 是数组类型
+
+function get_userinfo_by_auth($content){
+
+     $url = 'https://api.weixin.qq.com/sns/userinfo?access_token='.$content ['access_token'].
+     '&openid='.$content ['openid'].'&lang=zh_CN';
+	 $user = file_get_contents($url);
+     $user = json_decode($user, true);
+     
+     return $user;
+}
+
+//微信授权登录 LoginController
+
+	public function auth(){
+			
+		$state = 'test';//该字符串是获取code时自定义的参数。
+	    if(I('get.state') != $state){//获取code
+	        get_code($state); //调用function.php中定义的get_code函数，$state是链接自带参数的 
+	        
+	    }else{
+	        //获取code之后	    
+	        //获取access_token;
+	      $content = get_access_token(); 
+	       
+	       //获取用户信息
+	       $u = get_userinfo_by_auth($content); //$user是保存用户信息的一位数组
+	       $user=array(
+		   		'openid'=>$u['openid'],
+		   		'sex'=>$u['sex'],
+		   		'nickname'=>$u['nickname'],
+		   		'imgurl'=>$u['headimgurl'],		   		
+		   );
+     var_dump($user);
+ }
 
